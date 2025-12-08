@@ -22,7 +22,7 @@ This website is primarily created for educational purposes.
 
 1. **Clone project directory:**
 
-2. **Start the server: **
+2. **Start the server:**
    ```bash
    npm install
    npm start
