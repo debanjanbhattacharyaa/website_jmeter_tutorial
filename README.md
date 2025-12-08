@@ -1,6 +1,7 @@
-# ✈️ Airline Ticket Booking System
+# ✈️ RemoteAIR Booking Portal
 
-A complete Node.js-based airline ticket booking website with token-based authentication, multiple pages, and a complete booking flow.
+A complete Node.js-based airline ticket booking website with token-based authentication, multiple pages, and a complete booking flow. 
+This website is primarily created for educational purposes.
 
 ## Features
 
@@ -13,53 +14,17 @@ A complete Node.js-based airline ticket booking website with token-based authent
 ✅ **Sign Out** - Logout functionality that terminates tokens  
 ✅ **Home Navigation** - Quick return to home from any page  
 
-## Project Structure
-
-```
-airline-booking/
-├── server.js              # Node.js Express backend
-├── public/
-│   └── index.html         # Frontend (all pages in one file)
-├── package.json           # Dependencies
-└── README.md              # This file
-```
-
-## Installation & Setup
-
 ### Prerequisites
 - **Node.js** (v14 or higher)
 - **npm** (comes with Node.js)
 
 ### Steps to Run Locally
 
-1. **Create project directory:**
-   ```bash
-   mkdir airline-booking
-   cd airline-booking
-   ```
+1. **Clone project directory:**
 
-2. **Copy all files:**
-   - Place `server.js` in the root directory
-   - Create a `public` folder in the root directory
-   - Place `index.html` inside the `public` folder
-   - Place `package.json` in the root directory
-
-   Your structure should look like:
-   ```
-   airline-booking/
-   ├── server.js
-   ├── package.json
-   └── public/
-       └── index.html
-   ```
-
-3. **Install dependencies:**
+2. **Start the server: **
    ```bash
    npm install
-   ```
-
-4. **Start the server:**
-   ```bash
    npm start
    ```
 
@@ -156,40 +121,6 @@ Headers: Authorization: token_xxx
 Response: { "success": true, "message": "Logout successful" }
 ```
 
-## Available Flights
-
-| Flight Number | Flight Name | Time | Price |
-|---|---|---|---|
-| AI101 | Indigo Express | 10:30 AM | ₹5000 |
-| AI202 | Air India Premier | 02:00 PM | ₹7500 |
-| SP303 | SpiceJet Direct | 04:15 PM | ₹4500 |
-| GO404 | GoAir Classic | 06:45 PM | ₹3500 |
-| AK505 | AirAsia Value | 08:30 PM | ₹3000 |
-
-## Available Cities
-
-New York, Los Angeles, Chicago, Houston, Phoenix, Miami, Seattle, Boston
-
-## Security Notes
-
-⚠️ **Important:**
-- This is a demo application using in-memory storage
-- Tokens are stored in memory and reset when server restarts
-- No database is used
-- For production, implement:
-  - Database (MongoDB, PostgreSQL, etc.)
-  - Password hashing (bcrypt)
-  - Secure token storage (JWT with signing)
-  - SSL/TLS encryption
-  - Payment gateway integration
-
-## Browser Compatibility
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
 ## Troubleshooting
 
 **Port 3000 already in use:**
@@ -221,23 +152,6 @@ Install nodemon for auto-restart:
 npm install --save-dev nodemon
 npm run dev
 ```
-
-## Features Implemented
-
-✅ Token-based authentication  
-✅ Protected API endpoints  
-✅ City dropdowns with unique selections  
-✅ Flight selection with radio buttons  
-✅ Payment validation  
-✅ Boarding pass generation  
-✅ JSON data display  
-✅ Session management with logout  
-✅ Home button navigation  
-✅ Form validation  
-✅ Error handling  
-✅ Responsive design  
-
-## License
 
 MIT
 
