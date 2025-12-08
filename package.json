@@ -1,18 +1,19 @@
 {
-  "name": "website_jmeter_tutorial",
+  "name": "airline-booking-system",
   "version": "1.0.0",
-  "description": "",
+  "description": "Airline Ticket Booking Website",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [],
+  "keywords": ["airline", "booking", "ticket"],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "^2.2.1",
-    "express": "^5.2.1"
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

@@ -1,157 +1,146 @@
-// server.js
-
 const express = require('express');
 const path = require('path');
-const fs = require('fs'); // Added fs for file reading
 const app = express();
-const port = 3000;
 
-// --- Simulated Data & State ---
-const sessions = {}; 
-const availableFlights = [
-    { number: 'AA101', name: 'Eagle Air', price: 450, time: '08:00 AM' },
-    { number: 'BA256', name: 'Global Wings', price: 620, time: '11:30 AM' },
-    { number: 'DL890', name: 'Sky High', price: 510, time: '02:45 PM' },
-];
-
-function generateToken() {
-    return 'token_' + Math.random().toString(36).substring(2, 15);
-}
-
-// --- Middleware Setup ---
+// Middleware
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
 
-// --- Authentication Middleware ---
-function requireAuth(req, res, next) {
-    const token = req.query.token;
-    if (!token || !sessions[token]) {
-        return res.redirect('/');
-    }
-    req.sessionToken = token;
-    req.bookingState = sessions[token];
-    next();
-}
-
-// --- Helper Function for Rendering HTML Templates ---
-app.response.renderTemplate = function(fileName, token) {
-    const filePath = path.join(__dirname, 'views', fileName);
-    let html = fs.readFileSync(filePath, 'utf8');
-    
-    // Inject common links and token
-    const homeUrl = token ? `/home?token=${token}` : '/';
-    const signOutUrl = token ? `/api/signout?token=${token}` : '/';
-
-    html = html.replace(/{{ TOKEN }}/g, token || '');
-    html = html.replace(/{{ HOME_URL }}/g, homeUrl);
-    html = html.replace(/{{ SIGNOUT_URL }}/g, signOutUrl);
-    
-    // Inject specific session data
-    if (token) {
-        const state = sessions[token];
-        
-        if (state.flights) {
-             const flightJson = JSON.stringify(state.flights).replace(/'/g, "\\'");
-             html = html.replace('{{ FLIGHT_DATA_JSON }}', flightJson);
-             html = html.replace('{{ ROUTE_SUMMARY }}', `${state.fromCity} to ${state.toCity}`);
-        }
-
-        if (state.selectedFlight) {
-            html = html.replace('{{ PRICE }}', state.selectedFlight.price);
-        }
-
-        if (state.pnr) {
-            html = html.replace('{{ PNR }}', state.pnr);
-            html = html.replace('{{ PASSENGER_NAME }}', state.cardName);
-            html = html.replace('{{ FLIGHT_NUMBER }}', state.selectedFlight.number);
-            html = html.replace('{{ ROUTE }}', `${state.fromCity} to ${state.toCity}`);
-            html = html.replace('{{ DEPARTURE_TIME }}', state.selectedFlight.time);
-            
-            // ✅ NEW: Inject the entire booking state as a pretty-printed JSON string
-            const fullBookingJson = JSON.stringify(state, null, 2);
-            // Escape any special characters (like <, >) to ensure it renders correctly inside <pre> tags
-            html = html.replace('{{ FULL_BOOKING_JSON }}', fullBookingJson.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
-        }
-    }
-
-    this.send(html);
+// In-memory storage (for demo purposes)
+const users = {
+  'user1': 'password123',
+  'user2': 'pass456'
 };
 
-// =======================================================================
-//                           API ROUTING 
-// =======================================================================
+const tokens = new Set();
 
-// All routes rely on query parameter tokens or redirects.
+const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Miami', 'Seattle', 'Boston'];
 
-app.get('/', (req, res) => res.renderTemplate('login.html'));
+const flights = [
+  { id: 1, number: 'AI101', name: 'Indigo Express', time: '10:30 AM', price: 5000 },
+  { id: 2, number: 'AI202', name: 'Air India Premier', time: '02:00 PM', price: 7500 },
+  { id: 3, number: 'SP303', name: 'SpiceJet Direct', time: '04:15 PM', price: 4500 },
+  { id: 4, number: 'GO404', name: 'GoAir Classic', time: '06:45 PM', price: 3500 },
+  { id: 5, number: 'AK505', name: 'AirAsia Value', time: '08:30 PM', price: 3000 }
+];
 
+const bookings = {};
+
+// Generate random token
+function generateToken() {
+  return 'token_' + Math.random().toString(36).substr(2, 20);
+}
+
+// Middleware to verify token
+function verifyToken(req, res, next) {
+  const token = req.headers['authorization'];
+  
+  if (!token || !tokens.has(token)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  next();
+}
+
+// Login API
 app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    if (username === 'user' && password === 'pass') {
-        const newToken = generateToken();
-        sessions[newToken] = {};
-        return res.redirect(`/home?token=${newToken}`);
-    }
-    res.redirect('/?error=invalid');
-});
-
-app.get('/home', requireAuth, (req, res) => res.renderTemplate('home.html', req.sessionToken));
-
-app.post('/api/search-flights', requireAuth, (req, res) => {
-    const { fromCity, toCity } = req.body;
+  const { username, password } = req.body;
+  
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password required' });
+  }
+  
+  if (users[username] && users[username] === password) {
+    const token = generateToken();
+    tokens.add(token);
     
-    req.bookingState.fromCity = fromCity;
-    req.bookingState.toCity = toCity;
-    req.bookingState.flights = availableFlights; 
-
-    // FIX: Token is guaranteed to be present here by requireAuth
-    res.redirect(`/select-flight?token=${req.sessionToken}`); 
+    return res.json({
+      success: true,
+      token: token,
+      message: 'Login successful'
+    });
+  }
+  
+  res.status(401).json({ error: 'Invalid credentials' });
 });
 
-app.get('/select-flight', requireAuth, (req, res) => {
-    if (!req.bookingState.fromCity) return res.redirect(`/home?token=${req.sessionToken}`);
-    res.renderTemplate('select_flight.html', req.sessionToken);
+// Get cities API
+app.get('/api/cities', verifyToken, (req, res) => {
+  res.json({ cities: cities });
 });
 
-app.post('/api/select-flight', requireAuth, (req, res) => {
-    const selectedFlightNumber = req.body.flightNumber;
-    const selectedFlight = availableFlights.find(f => f.number === selectedFlightNumber);
-    
-    if (selectedFlight) {
-        req.bookingState.selectedFlight = selectedFlight;
-        return res.redirect(`/payment?token=${req.sessionToken}`);
-    }
-    res.redirect(`/select-flight?token=${req.sessionToken}`);
+// Get flights API
+app.post('/api/flights', verifyToken, (req, res) => {
+  const { fromCity, toCity } = req.body;
+  
+  if (!fromCity || !toCity) {
+    return res.status(400).json({ error: 'From and To cities required' });
+  }
+  
+  if (fromCity === toCity) {
+    return res.status(400).json({ error: 'From and To cities cannot be same' });
+  }
+  
+  res.json({ flights: flights });
 });
 
-app.get('/payment', requireAuth, (req, res) => {
-    if (!req.bookingState.selectedFlight) return res.redirect(`/select-flight?token=${req.sessionToken}`);
-    res.renderTemplate('payment.html', req.sessionToken);
+// Payment API
+app.post('/api/payment', verifyToken, (req, res) => {
+  const { cardNumber, cvv, cardName, flightId, fromCity, toCity } = req.body;
+  
+  if (!cardNumber || !cvv || !cardName || !flightId) {
+    return res.status(400).json({ error: 'All payment details required' });
+  }
+  
+  if (cardNumber.length !== 12 || isNaN(cardNumber)) {
+    return res.status(400).json({ error: 'Card number must be 12 digits' });
+  }
+  
+  if (cvv.length !== 3 || isNaN(cvv)) {
+    return res.status(400).json({ error: 'CVV must be 3 digits' });
+  }
+  
+  const flight = flights.find(f => f.id == flightId);
+  if (!flight) {
+    return res.status(400).json({ error: 'Invalid flight' });
+  }
+  
+  // Generate booking ID
+  const bookingId = 'BK' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  const bookingData = {
+    bookingId,
+    passenger: cardName,
+    flight: flight,
+    fromCity,
+    toCity,
+    bookingDate: new Date().toISOString(),
+    seatNumber: 'A' + Math.floor(Math.random() * 30 + 1)
+  };
+  
+  bookings[bookingId] = bookingData;
+  
+  res.json({
+    success: true,
+    booking: bookingData,
+    message: 'Payment successful'
+  });
 });
 
-app.post('/api/pay', requireAuth, (req, res) => {
-    const { cardNumber, cvv, cardName } = req.body;
-    
-    if (cardNumber && cardNumber.length === 12 && cvv && cvv.length === 3 && cardName) {
-        req.bookingState.pnr = Math.random().toString(36).substring(2, 8).toUpperCase();
-        req.bookingState.cardName = cardName;
-        return res.redirect(`/boarding-pass?token=${req.sessionToken}`);
-    }
-    res.redirect(`/payment?token=${req.sessionToken}`);
+// Logout API
+app.post('/api/logout', verifyToken, (req, res) => {
+  const token = req.headers['authorization'];
+  tokens.delete(token);
+  
+  res.json({ success: true, message: 'Logout successful' });
 });
 
-app.get('/boarding-pass', requireAuth, (req, res) => {
-    if (!req.bookingState.pnr) return res.redirect(`/home?token=${req.sessionToken}`);
-    res.renderTemplate('boarding_pass.html', req.sessionToken);
+// Serve login page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.get('/api/signout', (req, res) => {
-    const token = req.query.token;
-    if (token) delete sessions[token]; 
-    res.redirect('/');
-});
-
-
-app.listen(port, () => {
-    console.log(`\n✅ Server running. Access at http://localhost:${port}/`);
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log('Test credentials: username="user1", password="password123"');
 });
