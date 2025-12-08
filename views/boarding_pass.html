@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Boarding Pass</title><link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="container">
+        <header>
+            <a href="{{ HOME_URL }}"><button class="header-btn">🏠 Home</button></a>
+            <a href="{{ SIGNOUT_URL }}"><button class="header-btn">👋 Sign Out</button></a>
+        </header>
+        
+        <h2 class="title">✅ Booking Confirmed!</h2>
+        <div class="boarding-pass-card">
+            <div class="pass-detail">
+                <strong>Passenger:</strong> <span>{{ PASSENGER_NAME }}</span>
+            </div>
+            <div class="pass-detail">
+                <strong>Route:</strong> <span>{{ ROUTE }}</span>
+            </div>
+            <div class="pass-detail">
+                <strong>Flight:</strong> <span>{{ FLIGHT_NUMBER }}</span>
+            </div>
+            <div class="pass-detail">
+                <strong>Departure:</strong> <span>{{ DEPARTURE_TIME }}</span>
+            </div>
+            <div class="pass-detail pnr-code">
+                <strong>PNR:</strong> <span>{{ PNR }}</span>
+            </div>
+        </div>
+        
+        <h3 class="title">Raw Booking Data (JSON)</h3>
+        <pre class="json-output-block">{{ FULL_BOOKING_JSON }}</pre>
+        
+    </div>
+</body>
+</html>

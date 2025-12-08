@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Select Flight</title><link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="container">
+        <header>
+            <a href="{{ HOME_URL }}"><button class="header-btn">🏠 Home</button></a>
+            <a href="{{ SIGNOUT_URL }}"><button class="header-btn">👋 Sign Out</button></a>
+        </header>
+        
+        <h2 class="title">Select Your Flight</h2>
+        <h3 class="route-summary">Route: {{ ROUTE_SUMMARY }}</h3>
+
+        <div id="flight-data" data-flights='{{ FLIGHT_DATA_JSON }}'></div>
+        <div id="flights-list"></div>
+        <button id="proceedBtn" class="primary-btn" disabled>Proceed to Pay</button>
+
+        <script>
+            // Client-side script to handle flight selection and submit data
+            const flights = JSON.parse(document.getElementById('flight-data').dataset.flights);
+            const token = '{{ TOKEN }}'; 
+            const list = document.getElementById('flights-list');
+            let selectedFlight = null;
+
+            flights.forEach(flight => {
+                const item = document.createElement('div');
+                item.className = 'flight-item';
+                item.innerHTML = `
+                    <div class="flight-details">
+                        <strong>${flight.name} (Flight ${flight.number})</strong>
+                        <span>Price: $${flight.price}</span>
+                    </div>
+                    <p class="flight-time">Departure: ${flight.time}</p>
+                `;
+                item.onclick = () => {
+                    document.querySelectorAll('.flight-item').forEach(el => el.classList.remove('selected'));
+                    item.classList.add('selected');
+                    selectedFlight = flight;
+                    document.getElementById('proceedBtn').disabled = false;
+                };
+                list.appendChild(item);
+            });
+
+            document.getElementById('proceedBtn').onclick = () => {
+                if (selectedFlight) {
+                    // Dynamic form submission to /api/select-flight with the token
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/api/select-flight?token=' + token;
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'flightNumber';
+                    input.value = selectedFlight.number;
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            };
+        </script>
+    </div>
+</body>
+</html>

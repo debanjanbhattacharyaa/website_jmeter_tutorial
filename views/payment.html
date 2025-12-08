@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Payment</title><link rel="stylesheet" href="style.css"></head>
+<body>
+    <div class="container">
+        <header>
+            <a href="{{ HOME_URL }}"><button class="header-btn">🏠 Home</button></a>
+            <a href="{{ SIGNOUT_URL }}"><button class="header-btn">👋 Sign Out</button></a>
+        </header>
+        
+        <h2 class="title">💳 Secure Payment</h2>
+        <div class="summary-card">
+            <h3>Amount Due: ${{ PRICE }}</h3>
+        </div> 
+        
+        <form method="POST" action="/api/pay?token={{ TOKEN }}" class="form-card">
+            <div class="input-group">
+                <label for="cardNumber">Card Number (12 Digits):</label>
+                <input type="number" name="cardNumber" required maxlength="12">
+            </div>
+            <div class="input-group">
+                <label for="cvv">CVV (3 Digits):</label>
+                <input type="number" name="cvv" required maxlength="3">
+            </div>
+            <div class="input-group">
+                <label for="cardName">Name on Card:</label>
+                <input type="text" name="cardName" required>
+            </div>
+            <button type="submit" class="primary-btn">Pay</button>
+        </form>
+    </div>
+</body>
+</html>
