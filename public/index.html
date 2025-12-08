@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remote Airline Booking Portal</title>
+    <title>Airline Ticket Booking</title>
     <style>
         * {
             margin: 0;
@@ -356,8 +356,8 @@
     <!-- Login Page -->
     <div id="login" class="page active">
         <div class="container" style="max-width: 500px; margin-top: 100px;">
-            <h1 style="text-align: center; margin-bottom: 10px;">✈️ Remote AIR Booking</h1>
-            <h2 style="text-align: center;">Login Page</h2>
+            <h1 style="text-align: center; margin-bottom: 10px;">✈️ Airline Booking</h1>
+            <h2 style="text-align: center;">Login</h2>
             
             <div class="form-group">
                 <label for="username">Username</label>
@@ -386,7 +386,7 @@
     <div id="home" class="page">
         <div class="container">
             <div class="header">
-                <h1> ✈️ Home Page</h1>
+                <h1>Home</h1>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
 
@@ -418,7 +418,7 @@
     <div id="flights" class="page">
         <div class="container">
             <div class="header">
-                <h1>✈️ Select Flight Page</h1>
+                <h1>Select Flight</h1>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
 
@@ -437,7 +437,7 @@
     <div id="payment" class="page">
         <div class="container">
             <div class="header">
-                <h1>✈️ Payment Page</h1>
+                <h1>Payment</h1>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
 
@@ -474,7 +474,7 @@
     <div id="boardingPass" class="page">
         <div class="container">
             <div class="header">
-                <h1>✈️ Booking Confirmation</h1>
+                <h1>Booking Confirmation</h1>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
 
@@ -528,6 +528,7 @@
 
                 if (response.ok) {
                     authToken = data.token;
+                    console.log('Login successful! Token:', authToken);
                     loadCitiesAndGoHome();
                 } else {
                     document.getElementById('loginError').textContent = data.error || 'Login failed';
@@ -542,7 +543,9 @@
             try {
                 const response = await fetch('/api/cities', {
                     method: 'GET',
-                    headers: { 'Authorization': authToken }
+                    headers: { 
+                        'Authorization': `Bearer ${authToken}`
+                    }
                 });
 
                 const data = await response.json();
@@ -601,7 +604,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': authToken
+                        'Authorization': `Bearer ${authToken}`
                     },
                     body: JSON.stringify({ fromCity: selectedFromCity, toCity: selectedToCity })
                 });
@@ -694,7 +697,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': authToken
+                        'Authorization': `Bearer ${authToken}`
                     },
                     body: JSON.stringify({
                         cardNumber,
@@ -785,7 +788,9 @@
             try {
                 await fetch('/api/logout', {
                     method: 'POST',
-                    headers: { 'Authorization': authToken }
+                    headers: { 
+                        'Authorization': `Bearer ${authToken}`
+                    }
                 });
             } catch (error) {}
 
