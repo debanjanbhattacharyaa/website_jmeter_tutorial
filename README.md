@@ -155,5 +155,4 @@ npm run dev
 
 ---
 
-**Created:** 2025  for **Educational Purpose**
-**Last Updated:** December 8, 2025
+**Created On:** 2025  for **Educational Purpose**
