@@ -23,16 +23,16 @@ This website is primarily created for educational purposes.
 1. **Clone project directory:**
 
 2. **Start the server:**
-   ```bash
+```bash
    npm install
    npm start
-   ```
+```
 
    You should see:
-   ```
+```
    Server running on http://localhost:3000
    Test credentials: username="user1", password="password123"
-   ```
+```
 
 5. **Open in browser:**
    - Go to `http://localhost:3000`
@@ -153,9 +153,7 @@ npm install --save-dev nodemon
 npm run dev
 ```
 
-MIT
-
 ---
 
-**Created:** 2025  
+**Created:** 2025  for **Educational Purpose**
 **Last Updated:** December 8, 2025
