@@ -13,6 +13,7 @@
             <stringProp name="Argument.name">gDirectory</stringProp>
             <stringProp name="Argument.value">C:/GIT/website_jmeter_tutorial/jmeterFiles/testData</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">C:/&lt;projectFolder&gt;</stringProp>
           </elementProp>
           <elementProp name="ghost" elementType="Argument">
             <stringProp name="Argument.name">ghost</stringProp>
@@ -32,6 +33,11 @@
           <elementProp name="gthinktime" elementType="Argument">
             <stringProp name="Argument.name">gthinktime</stringProp>
             <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="gthinktime2" elementType="Argument">
+            <stringProp name="Argument.name">gthinktime2</stringProp>
+            <stringProp name="Argument.value">3000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -59,7 +65,7 @@
         <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
       </CookieManager>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config - city">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config - city" enabled="false">
         <stringProp name="filename">${gDirectory}/city.csv</stringProp>
         <stringProp name="fileEncoding"></stringProp>
         <stringProp name="variableNames">city1,city2</stringProp>
@@ -212,7 +218,7 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">token</stringProp>
               <stringProp name="RegexExtractor.regex">&quot;token&quot;:&quot;(.+?)&quot;,</stringProp>
@@ -240,7 +246,7 @@
           <stringProp name="ActionProcessor.duration">${gthinktime}</stringProp>
         </TestAction>
         <hashTree/>
-        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="TC03_SELECT_CITIES_PAGE While Loop" enabled="false">
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="TC03_SELECT_CITIES_PAGE While Loop">
           <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;city1&quot;) == vars.get(&quot;city2&quot;))}</stringProp>
         </WhileController>
         <hashTree>
@@ -315,7 +321,7 @@
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Flow Control Action">
           <intProp name="ActionProcessor.action">1</intProp>
           <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">${gthinktime}</stringProp>
+          <stringProp name="ActionProcessor.duration">${gthinktime2}</stringProp>
         </TestAction>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC04_SELECT_FLIGHT_PAGE">
@@ -394,7 +400,7 @@
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5 /api/payment">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5 /api/payment" enabled="true">
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
             <stringProp name="HTTPSampler.path">/api/payment</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -448,7 +454,7 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
               <collectionProp name="Asserion.test_strings">
                 <stringProp name="-547797305">&quot;success&quot;:true</stringProp>
               </collectionProp>
@@ -466,11 +472,11 @@
           <stringProp name="ActionProcessor.duration">${gthinktime}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC06_LOGOUT_PAGE">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC06_LOGOUT_PAGE" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6 /api/logout">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="6 /api/logout" enabled="true">
             <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
             <stringProp name="HTTPSampler.path">/api/logout</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -507,7 +513,7 @@
               </collectionProp>
             </HeaderManager>
             <hashTree/>
-            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion">
               <collectionProp name="Asserion.test_strings">
                 <stringProp name="-547797305">&quot;success&quot;:true</stringProp>
               </collectionProp>
@@ -526,7 +532,7 @@
         </TestAction>
         <hashTree/>
       </hashTree>
-      <com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup guiclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroupGui" testclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup" testname="RemoteAIR Ticket Booking - Concurrency" enabled="false">
+      <com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup guiclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroupGui" testclass="com.blazemeter.jmeter.threads.concurrency.ConcurrencyThreadGroup" testname="RemoteAIR Ticket Booking - Concurrency">
         <elementProp name="ThreadGroup.main_controller" elementType="com.blazemeter.jmeter.control.VirtualUserController"/>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <stringProp name="TargetLevel">10</stringProp>
@@ -685,7 +691,7 @@
           <stringProp name="ActionProcessor.duration">${gthinktime}</stringProp>
         </TestAction>
         <hashTree/>
-        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="TC03_SELECT_CITIES_PAGE While Loop" enabled="false">
+        <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="TC03_SELECT_CITIES_PAGE While Loop">
           <stringProp name="WhileController.condition">${__groovy(vars.get(&quot;city1&quot;) == vars.get(&quot;city2&quot;))}</stringProp>
         </WhileController>
         <hashTree>
@@ -1005,6 +1011,21 @@
         </objProp>
         <stringProp name="filename"></stringProp>
       </ResultCollector>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="city1" elementType="Argument">
+            <stringProp name="Argument.name">city1</stringProp>
+            <stringProp name="Argument.value">London</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="city2" elementType="Argument">
+            <stringProp name="Argument.name">city2</stringProp>
+            <stringProp name="Argument.value">London</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
       <hashTree/>
     </hashTree>
   </hashTree>
